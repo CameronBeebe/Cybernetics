@@ -2,6 +2,9 @@ import numpy as np
 import pandas as pd
 
 def create_game(size):
+    '''
+    This function takes a size tuple and creates a game matrix of size=(x,y).
+    '''
     game_matrix = np.random.randint(10, size=size)
     rows = [i+1 for i in range(len(game_matrix))]
     print(rows)
@@ -9,14 +12,20 @@ def create_game(size):
 
 def environment_play(game,dist):
     '''
-    
+    This function takes a game and a distribution and returns an environmental "play" according to the distribution over the environment's actions in the game matrix.
     '''
     return np.random.choice(game.index, size=1, p=dist).item()
 
 def regulator_action(game,probs):
+    '''
+    This function takes a game and a probability distribution and returns a regulator action to try to "control" the environmental action ("disturbance").
+    '''
     return np.random.choice(game.columns, size=1, p=probs).item()
 
 def prob_calc(regulator_dict):
+    '''
+    This function takes a regulator dictionary (composed of actions and pre-probabilities, i.e. a "Polya urn" filled with "action-balls") and converts the urn into probabilities.
+    '''
     sum_reg = np.array(sum([regulator_dict[i] for i in regulator_dict]))
     return np.array([regulator_dict[i]/sum_reg for i in regulator_dict])
 
@@ -46,6 +55,13 @@ def squeeze(regulator_dict, urn_list):
             #print('squeeze up:', regulator_dict[i])
 
 def update(regulator_dict,action,out,goal,urn_list,skweez=False):
+    '''
+    This update function takes as arguments a regulator, its action, the output in the game matrix of that action, the regulator's goal, and an "urn" composing the regulator's disposition toward actions.  It compares the state of the world output (entry in game matrix) as a result of the action with the regulator's goal.  
+
+    A success variable is set to 1 if the output is in alignment with the regulator's goal.
+
+    Returns success (0 or 1).
+    '''
     success = 0
     if out == goal:
         #print(action)
@@ -59,7 +75,14 @@ def update(regulator_dict,action,out,goal,urn_list,skweez=False):
         squeeze(regulator_dict, urn_list)
     return success
 
-def train(game_size,goal,epochs,skweez):
+def train(game_size,goal,epochs,skweez=None):
+    '''
+    The train function is the primary function for the frontend user of this package.
+
+    The user must provide a game_size=(x,y), where x,y are integers (not tested for very large sizes!).
+
+    The user must specify the number of epochs (environment plays x regulator actions x updates) they wish to train the regulator.
+    '''
     game = create_game(game_size)
     print(game)
     urn = np.random.randint(100, size=len(game.columns))
