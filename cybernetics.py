@@ -4,6 +4,8 @@ import pandas as pd
 def create_game(size, ran_range):
     '''
     This function takes a size tuple and creates a game matrix of size=(x,y).
+    
+    ran_range is to be passed from frontend use of train.
     '''
     game_matrix = np.random.randint(ran_range, size=size)
     rows = [i+1 for i in range(len(game_matrix))]
