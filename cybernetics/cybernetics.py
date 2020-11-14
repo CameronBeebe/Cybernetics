@@ -56,16 +56,16 @@ def squeeze(regulator_dict, urn_list):
             regulator_dict[i] += 1
             #print('squeeze up:', regulator_dict[i])
 
-def update(regulator_dict,action,out,goal,urn_list,skweez=False):
+def update(regulator_dict,action,out,goals,urn_list,skweez=False):
     '''
-    This update function takes as arguments a regulator, its action, the output in the game matrix of that action, the regulator's goal, and an "urn" composing the regulator's disposition toward actions.  It compares the state of the world output (entry in game matrix) as a result of the action with the regulator's goal.  
+    This update function takes as arguments a regulator, its action, the output in the game matrix of that action, the regulator's goals, and an "urn" composing the regulator's disposition toward actions.  It compares the state of the world output (entry in game matrix) as a result of the action with the regulator's goals.  
 
-    A success variable is set to 1 if the output is in alignment with the regulator's goal.
+    A success variable is set to 1 if the output is in alignment with the regulator's goals.
 
     Returns success (0 or 1).
     '''
     success = 0
-    if out == goal:
+    if out in goals:
         #print(action)
         #print("success: reinforced the regulator's action", action, "from", regulator_dict[action], "to", regulator_dict[action]+len(regulator_dict))
         regulator_dict[action] += len(regulator_dict)**(1/2)

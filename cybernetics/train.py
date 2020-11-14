@@ -8,11 +8,13 @@ from .cybernetics import prob_calc
 from .cybernetics import squeeze
 from .cybernetics import update
 
-def train(game_size,goal,epochs,ran_range=10,skweez=None):
+def train(game_size,goals,epochs,ran_range=10,skweez=None):
     '''
     The train function is the primary function for the frontend user of this package.
 
     The user must provide a game_size=(x,y), where x,y are integers (not tested for very large sizes!).
+    
+    The user may provide a list of multiple goals=[i,j,k,...].
 
     The user must specify the number of epochs (environment plays x regulator actions x updates) they wish to train the regulator.
     
@@ -43,7 +45,7 @@ def train(game_size,goal,epochs,ran_range=10,skweez=None):
         #print("out:",out)
         
         # Update regulator.
-        successes += update(regulator,action,out,goal,urn,skweez=skweez)
+        successes += update(regulator,action,out,goals,urn,skweez=skweez)
         print("successes per epoch:",successes / i)
         
         # Recalculate regulator probabilities.
