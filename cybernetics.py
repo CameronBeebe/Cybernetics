@@ -1,11 +1,11 @@
 import numpy as np
 import pandas as pd
 
-def create_game(size):
+def create_game(size, ran_range):
     '''
     This function takes a size tuple and creates a game matrix of size=(x,y).
     '''
-    game_matrix = np.random.randint(10, size=size)
+    game_matrix = np.random.randint(ran_range, size=size)
     rows = [i+1 for i in range(len(game_matrix))]
     print(rows)
     return pd.DataFrame(data = game_matrix, columns=[i+1 for i in range(game_matrix.shape[1])], index=rows)
@@ -75,15 +75,17 @@ def update(regulator_dict,action,out,goal,urn_list,skweez=False):
         squeeze(regulator_dict, urn_list)
     return success
 
-def train(game_size,goal,epochs,skweez=None):
+def train(game_size,goal,epochs,ran_range=10,skweez=None):
     '''
     The train function is the primary function for the frontend user of this package.
 
     The user must provide a game_size=(x,y), where x,y are integers (not tested for very large sizes!).
 
     The user must specify the number of epochs (environment plays x regulator actions x updates) they wish to train the regulator.
+    
+    The ran_range of the random game matrix defaults to 10.
     '''
-    game = create_game(game_size)
+    game = create_game(game_size,ran_range)
     print(game)
     urn = np.random.randint(100, size=len(game.columns))
     probs = np.array([(i/sum(urn)) for i in urn])
