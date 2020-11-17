@@ -8,7 +8,7 @@ from .cybernetics import prob_calc
 from .cybernetics import squeeze
 from .cybernetics import update
 
-def train(game_size,goals,epochs,ran_range=10,skweez=None):
+def train(game_size=None,goals=[],epochs=5,ran_range=10,game=None,skweez=None):
     '''
     The train function is the primary function for the frontend user of this package.
 
@@ -20,14 +20,17 @@ def train(game_size,goals,epochs,ran_range=10,skweez=None):
     
     The ran_range of the random game matrix defaults to 10.
     '''
-    game = create_game(game_size,ran_range)
-    print(game)
-    urn = np.random.randint(100, size=len(game.columns))
+    if (game is not None) and (game_size==None):
+        train_game = game
+    else:
+        train_game = create_game(game_size,ran_range)
+    print(train_game)
+    urn = np.random.randint(100, size=len(train_game.columns))
     probs = np.array([(i/sum(urn)) for i in urn])
     #print("probs:",probs)
-    regulator = dict(zip(game.columns,urn))
+    regulator = dict(zip(train_game.columns,urn))
     print("regulator:",regulator)
-    dist = np.random.dirichlet(alpha=game.index)
+    dist = np.random.dirichlet(alpha=train_game.index)
     successes = 0
     i=1
     while i <= epochs:
@@ -35,13 +38,13 @@ def train(game_size,goals,epochs,ran_range=10,skweez=None):
         print("Epoch: ",i)
         
         # Environment chooses play.
-        play = environment_play(game,dist)
+        play = environment_play(train_game,dist)
         
         # Regulator chooses action.
-        action = regulator_action(game,probs)
+        action = regulator_action(train_game,probs)
         
         # Compute state of the world that is output (index in game matrix)
-        out = game.loc[play,action]
+        out = train_game.loc[play,action]
         #print("out:",out)
         
         # Update regulator.

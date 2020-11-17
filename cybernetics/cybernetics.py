@@ -1,7 +1,7 @@
 import numpy as np
 import pandas as pd
 
-def create_game(size, ran_range):
+def create_game(size, ran_range=10):
     '''
     This function takes a size tuple and creates a game matrix of size=(x,y).
     
@@ -9,7 +9,6 @@ def create_game(size, ran_range):
     '''
     game_matrix = np.random.randint(ran_range, size=size)
     rows = [i+1 for i in range(len(game_matrix))]
-    print(rows)
     return pd.DataFrame(data = game_matrix, columns=[i+1 for i in range(game_matrix.shape[1])], index=rows)
 
 def environment_play(game,dist):
