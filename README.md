@@ -4,7 +4,7 @@ Connectionist artificial neural networks are cybernetic regulators.
 
 TO DO:
 
-1.  Ability to input game, not just game_size (so can compare multiple runs on same game)
+1.  Ability to input game, not just game_size (so can compare multiple runs on same game).  DONE, NEEDS LOGIC CHECK / TEST in train.py AND DOCSTRING UPDATED
 
 2.  Game analysis: check goals against random game composition (i.e. calculate availability of success to compare to regulator performance)
 
