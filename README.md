@@ -1,6 +1,8 @@
-A toy implementation of the game theoretic foundation of cybernetic systems theory as outlined by W. R. Ashby.
+An implementation of the game theoretic foundation of cybernetic systems theory as outlined by W. R. Ashby.
 
-Connectionist artificial neural networks are cybernetic regulators.
+Cybernetics, as outlined by Ashby, provides a foundational framework to understand the effectiveness of common machine learning techniques.  In particular, connectionist artificial neural networks can be understood as cybernetic regulators which are error-controlled, or which learn through reinforcement.
+
+The ultimate goal of this package is to provide a common class structure for regulatory objects.
 
 TO DO:
 
