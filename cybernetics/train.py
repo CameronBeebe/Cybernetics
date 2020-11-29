@@ -8,7 +8,7 @@ from .cybernetics import prob_calc
 from .cybernetics import squeeze
 from .cybernetics import update
 
-def train(game_size=None,goals=[],epochs=5,ran_range=10,game=None,skweez=None):
+def train(game_size=(1,1),goals=[],epochs=5,ran_range=10,game=None,skweez=None):
     '''
     The train function is the primary function for the frontend user of this package.
 
@@ -20,7 +20,7 @@ def train(game_size=None,goals=[],epochs=5,ran_range=10,game=None,skweez=None):
     
     The ran_range of the random game matrix defaults to 10.
     '''
-    if (game is not None) and (game_size==None):
+    if (game is not None) and (game_size==(1,1)):
         train_game = game
     else:
         train_game = create_game(game_size,ran_range)

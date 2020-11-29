@@ -8,7 +8,8 @@ def create_game(size, ran_range=10):
     ran_range is to be passed from frontend use of train.
     '''
     game_matrix = np.random.randint(ran_range, size=size)
-    rows = [i+1 for i in range(len(game_matrix))]
+    print('Created game matrix of size', size)
+    rows = [i+1 for i in range(size[0])]
     return pd.DataFrame(data = game_matrix, columns=[i+1 for i in range(game_matrix.shape[1])], index=rows)
 
 def environment_play(game,dist):
