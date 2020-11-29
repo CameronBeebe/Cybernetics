@@ -16,4 +16,4 @@ TO DO:
 
 5.  Add normalization function to urn (value in regulator dictionary)?
 
-6.  Prototype class structures for regulator objects in general
+6.  Prototype class structures for regulator objects in general.  BEGAN
