@@ -6,9 +6,15 @@ The ultimate goal of this package is to provide a common class structure for reg
 
 TO DO:
 
-1.  Ability to input game, not just game_size (so can compare multiple runs on same game).  DONE, NEEDS LOGIC CHECK / TEST in train.py AND DOCSTRING UPDATED
+1.  Ability to input game, not just game_size (so can compare multiple runs on same game).  
+
+DONE, NEEDS LOGIC CHECK / TEST in train.py AND DOCSTRING UPDATED
 
 2.  Game analysis: check goals against random game composition (i.e. calculate availability of success to compare to regulator performance)
+
+STARTED TESTING.  
+
+2a.  Create visualization for performance and comparison to potential performance.
 
 3.  Clean up verbosity for notebook (inline accuracy meter?)
 
@@ -16,4 +22,6 @@ TO DO:
 
 5.  Add normalization function to urn (value in regulator dictionary)?
 
-6.  Prototype class structures for regulator objects in general.  BEGAN
+6.  Prototype class structures for regulator objects in general.  
+
+BEGAN
