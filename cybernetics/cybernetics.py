@@ -70,7 +70,8 @@ def update(regulator_dict,action,out,goals,urn_list,skweez=False):
         #print("success: reinforced the regulator's action", action, "from", regulator_dict[action], "to", regulator_dict[action]+len(regulator_dict))
         regulator_dict[action] += len(regulator_dict)**(1/2)
         success += 1
-        print("success!")
+        # REMOVED PRINTS FOR LARGE TESTING
+        #print("success!")
         #print('now we need to recalculate the probabilities according to the reinforced urn')
     elif skweez:
         print('fail: squeezing.')
