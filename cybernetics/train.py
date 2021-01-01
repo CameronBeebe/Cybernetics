@@ -35,7 +35,6 @@ def train(game_size=(1,1),goals=[],epochs=5,ran_range=10,game=None,skweez=None):
     i=1
     while i <= epochs:
         
-        print("Epoch: ",i)
         
         # Environment chooses play.
         play = environment_play(train_game,dist)
@@ -49,7 +48,11 @@ def train(game_size=(1,1),goals=[],epochs=5,ran_range=10,game=None,skweez=None):
         
         # Update regulator.
         successes += update(regulator,action,out,goals,urn,skweez=skweez)
-        print("successes per epoch:",successes / i)
+        
+        # Print only every 5 epochs for brevity.
+        if i % 5 == 0:
+            print("Epoch: ",i)
+            print("successes per epoch:",successes / i)
         
         # Recalculate regulator probabilities.
         probs = prob_calc(regulator)
