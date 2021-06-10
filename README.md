@@ -25,3 +25,7 @@ STARTED TESTING.
 6.  Prototype class structures for regulator objects in general.  
 
 BEGAN
+
+7.  Separate classes into separate .py file
+
+8.  Parallelize: put logic into train(?) file for both MPI and pyspark
