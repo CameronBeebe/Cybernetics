@@ -29,3 +29,5 @@ BEGAN
 7.  Separate classes into separate .py file
 
 8.  Parallelize: put logic into train(?) file for both MPI and pyspark
+
+9.  Integrate everything into classes, remove old files
