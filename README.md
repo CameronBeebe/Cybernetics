@@ -31,3 +31,5 @@ BEGAN
 8.  Parallelize: put logic into train(?) file for both MPI and pyspark
 
 9.  Integrate everything into classes, remove old files
+
+10.  Add quality control: check to make sure something in list of goals are in game so trivially unproductive games are not run.
