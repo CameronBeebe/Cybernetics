@@ -61,13 +61,13 @@ class Ashby(Regulator):
         '''
         This function takes a game and a distribution and returns an environmental "play" according to the distribution over the environment's actions in the game matrix.
         '''
-        return np.random.choice(self.game.index, size=1, p=dist).item()
+        return np.random.choice(self.game_df.index, size=1, p=dist).item()
 
     def regulator_action(self,probs):
         '''
         This function takes a game and a probability distribution and returns a regulator action to try to "control" the environmental action ("disturbance").
         '''
-        return np.random.choice(self.game.columns, size=1, p=probs).item()
+        return np.random.choice(self.game_df.columns, size=1, p=probs).item()
 
     def prob_calc(self,regulator_dict):
         '''
@@ -146,15 +146,17 @@ class Ashby(Regulator):
             #self.game = self.create_game(self.game_size,self.ran_range)
             self.game = self.create_game()
             
-            
-            
         print(self.game)
-        urn = np.random.randint(100, size=len(self.game.columns))
+        urn = np.random.randint(100, size=len(self.game_df.columns))
         probs = np.array([(i/sum(urn)) for i in urn])
         #print("probs:",probs)
-        regulator = dict(zip(self.game.columns,urn))
+        
+        regulator = dict(zip(self.game_df.columns,urn))
         print("regulator:",regulator)
-        dist = np.random.dirichlet(alpha=self.game.index)
+        
+        dist = np.random.dirichlet(alpha=self.game_df.index)
+        print('printing dist: {}'.format(dist))
+        
         successes = 0
         i=1
         
@@ -164,12 +166,13 @@ class Ashby(Regulator):
 
             # Environment chooses play.
             play = self.environment_play(dist)
+            #print('printing play: {}'.format(play))
 
             # Regulator chooses action.
             action = self.regulator_action(probs)
 
             # Compute state of the world that is output (index in game matrix)
-            out = self.game.loc[play,action]
+            out = self.game_df.loc[play,action]
             #print("out:",out)
 
             # Update regulator.
