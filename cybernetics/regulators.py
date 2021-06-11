@@ -25,7 +25,7 @@ class Ashby(Regulator):
     #from cybernetics.train import train
     
     #def __init__(self,goals,game_size,epochs,ran_range,game):
-    def __init__(self,goals=[],game_size=(1,1),epochs=5,ran_range=10,game=None,skweez=None,history=dict()):
+    def __init__(self,goals=[],game_size=(1,1),epochs=5,ran_range=10,game=None,skweez=None,history=dict(),game_df=None):
         Regulator.__init__(self)
         self.goals = goals
         self.game_size = game_size
@@ -34,6 +34,7 @@ class Ashby(Regulator):
         self.game = game
         self.skweez = skweez
         self.history = history
+        self.game_df = game_df
         
         
         
@@ -45,13 +46,16 @@ class Ashby(Regulator):
         ran_range is to be passed from frontend use of train.
         '''
         game_matrix = np.random.randint(self.ran_range, size=self.game_size)
-        print('Created game matrix of size', self.game_size)
+        print('Created game matrix of size {}.  Returning game dataframe...'.format(self.game_size))
         rows = [i+1 for i in range(self.game_size[0])]
         
         # Set object game attribute
         self.game = game_matrix
         
-        return pd.DataFrame(data = game_matrix, columns=[i+1 for i in range(game_matrix.shape[1])], index=rows)
+        # Set object game_df attribute
+        self.game_df = pd.DataFrame(data = game_matrix, columns=[i+1 for i in range(game_matrix.shape[1])], index=rows)
+        
+        return self.game_df
 
     def environment_play(self,dist):
         '''
