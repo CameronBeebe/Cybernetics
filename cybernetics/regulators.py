@@ -1,5 +1,7 @@
 import numpy as np
 import pandas as pd
+import mpi4py as MPI
+import pyspark
 
 class Regulator():
     '''
@@ -25,7 +27,7 @@ class Ashby(Regulator):
     #from cybernetics.train import train
     
     #def __init__(self,goals,game_size,epochs,ran_range,game):
-    def __init__(self,goals=[],game_size=(1,1),epochs=5,ran_range=10,game=None,skweez=None,history=dict(),game_df=None):
+    def __init__(self,goals=[], game_size=(1,1), epochs=5, ran_range=10, game=None, skweez=None, history=dict(), game_df=None, parallelize=False, mpi=False, pyspark=False):
         Regulator.__init__(self)
         self.goals = goals
         self.game_size = game_size
@@ -35,15 +37,17 @@ class Ashby(Regulator):
         self.skweez = skweez
         self.history = history
         self.game_df = game_df
+        self.parallelize = parallelize
+        self.mpi = mpi
+        self.pyspark = pyspark
         
         
         
         
     def create_game(self):
         '''
-        This function takes a size tuple and creates a game matrix of size=(x,y).
+        This function takes a size tuple attribute and creates a game matrix of size=(x,y).
 
-        ran_range is to be passed from frontend use of train.
         '''
         game_matrix = np.random.randint(self.ran_range, size=self.game_size)
         print('Created game matrix of size {}.  Returning game dataframe...'.format(self.game_size))
@@ -137,7 +141,7 @@ class Ashby(Regulator):
         
         print('self.game:',self.game)
         
-            
+        # Get game.    
         if self.game is not None:
             print('Game given')
             print('setting game size to self.game.shape')
@@ -146,6 +150,14 @@ class Ashby(Regulator):
             print('Creating game of size', self.game_size, 'and range', self.ran_range)
             #self.game = self.create_game(self.game_size,self.ran_range)
             self.game = self.create_game()
+            
+
+        if self.parallelize:
+            print('Parallelization engaged.')
+            if self.mpi:
+                print('MPI engaged.')
+            elif self.pyspark:
+                print('Pyspark engaged.')
             
         print(self.game)
         urn = np.random.randint(100, size=len(self.game_df.columns))
@@ -166,7 +178,7 @@ class Ashby(Regulator):
         while i <= self.epochs:
             
             if self.goals == []:
-                print('No goals. Breaking')
+                print('No goals. Breaking.')
                 break
 
             # Environment chooses play.
