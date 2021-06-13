@@ -1,6 +1,6 @@
 import numpy as np
 import pandas as pd
-import mpi4py as MPI
+from mpi4py import MPI
 import pyspark
 
 class Regulator():
@@ -156,6 +156,8 @@ class Ashby(Regulator):
             print('Parallelization engaged.')
             if self.mpi:
                 print('MPI engaged.')
+                comm = MPI.COMM_WORLD
+                rank = comm.Get_rank()
             elif self.pyspark:
                 print('Pyspark engaged.')
             
