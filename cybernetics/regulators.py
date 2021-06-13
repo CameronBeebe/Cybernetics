@@ -110,6 +110,7 @@ class Ashby(Regulator):
         Returns success (0 or 1).
         '''
         success = 0
+            
         if out in goals:
             #print(action)
             #print("success: reinforced the regulator's action", action, "from", regulator_dict[action], "to", regulator_dict[action]+len(regulator_dict))
@@ -163,6 +164,10 @@ class Ashby(Regulator):
         history = self.history
         
         while i <= self.epochs:
+            
+            if self.goals == []:
+                print('No goals. Breaking')
+                break
 
             # Environment chooses play.
             play = self.environment_play(dist)
