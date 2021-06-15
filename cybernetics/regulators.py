@@ -27,7 +27,7 @@ class Ashby(Regulator):
     #from cybernetics.train import train
     
     #def __init__(self,goals,game_size,epochs,ran_range,game):
-    def __init__(self,goals=[], game_size=(1,1), epochs=5, ran_range=10, game=None, skweez=None, history=dict(), game_df=None, parallelize=False, mpi=False, pyspark=False):
+    def __init__(self,goals=[], game_size=(1,1), epochs=5, ran_range=10, game=None, skweez=None, history=dict(), game_df=None, parallelize=False, mpi=False, pyspark=False, comm=False, rank=False):
         Regulator.__init__(self)
         self.goals = goals
         self.game_size = game_size
@@ -37,29 +37,75 @@ class Ashby(Regulator):
         self.skweez = skweez
         self.history = history
         self.game_df = game_df
-        self.parallelize = parallelize
-        self.mpi = mpi
-        self.pyspark = pyspark
         
+        # For parallelization
+        self._parallelize = parallelize
+        self._mpi = mpi
+        self._pyspark = pyspark
         
+        # For MPI
+        self._comm = comm
+        self._rank = rank
+        
+        # Parallelization logic.
+        if self._parallelize:
+            print('Parallelization engaged.')
+            if self._mpi:
+                print('MPI engaged.')
+                print('I am rank {}.'.format(self._rank))
+                #self._comm = MPI.COMM_WORLD
+                #self._rank = self._comm.Get_rank()
+            elif self._pyspark:
+                print('Pyspark engaged.')
         
         
     def create_game(self):
         '''
         This function takes a size tuple attribute and creates a game matrix of size=(x,y).
+        
+        It also checks for parallelization and acts accordingly.
 
         '''
-        game_matrix = np.random.randint(self.ran_range, size=self.game_size)
-        print('Created game matrix of size {}.  Returning game dataframe...'.format(self.game_size))
-        rows = [i+1 for i in range(self.game_size[0])]
         
-        # Set object game attribute
-        self.game = game_matrix
-        
-        # Set object game_df attribute
-        self.game_df = pd.DataFrame(data = game_matrix, columns=[i+1 for i in range(game_matrix.shape[1])], index=rows)
-        
-        return self.game_df
+        if self._mpi:
+            
+            if self._rank == 0:
+                print('MPI logic creating game only for root rank.')
+                
+                # Calculate game only once (in root rank)
+                game_matrix = np.random.randint(self.ran_range, size=self.game_size)
+                print('Created game matrix of size {}.  Returning game dataframe...'.format(self.game_size))
+                rows = [i+1 for i in range(self.game_size[0])]
+            
+            else:
+                game_matrix = None
+                rows = None
+                
+            # Broadcast data from root
+            game_matrix = self._comm.bcast(game_matrix, root=0)
+            rows = self._comm.bcast(rows, root=0)
+            
+            # Set object game attribute for each rank
+            self.game = game_matrix
+
+            # Set object game_df attribute for each rank
+            self.game_df = pd.DataFrame(data = game_matrix, columns=[i+1 for i in range(game_matrix.shape[1])], index=rows)
+
+            return self.game_df
+            
+        else:
+            print('No ranks.')
+            game_matrix = np.random.randint(self.ran_range, size=self.game_size)
+            print('Created game matrix of size {}.  Returning game dataframe...'.format(self.game_size))
+            rows = [i+1 for i in range(self.game_size[0])]
+
+            # Set object game attribute
+            self.game = game_matrix
+
+            # Set object game_df attribute
+            self.game_df = pd.DataFrame(data = game_matrix, columns=[i+1 for i in range(game_matrix.shape[1])], index=rows)
+
+            return self.game_df
 
     def environment_play(self,dist):
         '''
@@ -132,12 +178,6 @@ class Ashby(Regulator):
         
         
     def train(self):
-        #from cybernetics.cybernetics import create_game
-        #from cybernetics.cybernetics import environment_play
-        #from cybernetics.cybernetics import regulator_action
-        #from cybernetics.cybernetics import prob_calc
-        #from cybernetics.cybernetics import squeeze
-        #from cybernetics.cybernetics import update
         
         print('self.game:',self.game)
         
@@ -146,20 +186,14 @@ class Ashby(Regulator):
             print('Game given')
             print('setting game size to self.game.shape')
             self.game_size = self.game.shape
+        elif self.parallelize:
+            if self.mpi:
+                print('mpi in training')
         else:
             print('Creating game of size', self.game_size, 'and range', self.ran_range)
             #self.game = self.create_game(self.game_size,self.ran_range)
             self.game = self.create_game()
             
-
-        if self.parallelize:
-            print('Parallelization engaged.')
-            if self.mpi:
-                print('MPI engaged.')
-                comm = MPI.COMM_WORLD
-                rank = comm.Get_rank()
-            elif self.pyspark:
-                print('Pyspark engaged.')
             
         print(self.game)
         urn = np.random.randint(100, size=len(self.game_df.columns))
