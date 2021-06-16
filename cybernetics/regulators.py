@@ -40,6 +40,10 @@ class Ashby(Regulator):
         self.history = history
         self.game_df = game_df
         
+        if self.game:
+            self.game_size = self.game.shape
+        
+        
         # For parallelization
         self._parallelize = parallelize
         self._mpi = mpi
@@ -68,34 +72,45 @@ class Ashby(Regulator):
         It also checks for parallelization and acts accordingly.
 
         '''
-        
-        if self._mpi:
-            
-            if self._rank == 0:
-                print('MPI logic creating game only for root rank.')
-                
-                # Calculate game only once (in root rank)
-                game_matrix = np.random.randint(self.ran_range, size=self.game_size)
-                print('Created game matrix of size {}.  Returning game dataframe...'.format(self.game_size))
-                rows = [i+1 for i in range(self.game_size[0])]
-            
-            else:
-                game_matrix = None
-                rows = None
-                
-            # Broadcast data from root
-            game_matrix = self._comm.bcast(game_matrix, root=0)
-            rows = self._comm.bcast(rows, root=0)
-            
-            # Set object game attribute for each rank
+        if 1:
+            game_matrix = np.random.randint(self.ran_range, size=self.game_size)
+            print('Created game matrix of size {}.  Returning game dataframe...'.format(self.game_size))
+            rows = [i+1 for i in range(self.game_size[0])]
+
+            # Set object game attribute
             self.game = game_matrix
 
-            # Set object game_df attribute for each rank
+            # Set object game_df attribute
             self.game_df = pd.DataFrame(data = game_matrix, columns=[i+1 for i in range(game_matrix.shape[1])], index=rows)
 
             return self.game_df
+#         if self._mpi:
             
-        else:
+#             if self._rank == 0:
+#                 print('MPI logic creating game only for root rank.')
+                
+#                 # Calculate game only once (in root rank)
+#                 game_matrix = np.random.randint(self.ran_range, size=self.game_size)
+#                 print('Created game matrix of size {}.  Returning game dataframe...'.format(self.game_size))
+#                 rows = [i+1 for i in range(self.game_size[0])]
+            
+#             else:
+#                 game_matrix = None
+#                 rows = None
+                
+#             # Broadcast data from root
+#             game_matrix = self._comm.bcast(game_matrix, root=0)
+#             rows = self._comm.bcast(rows, root=0)
+            
+#             # Set object game attribute for each rank
+#             self.game = game_matrix
+
+#             # Set object game_df attribute for each rank
+#             self.game_df = pd.DataFrame(data = game_matrix, columns=[i+1 for i in range(game_matrix.shape[1])], index=rows)
+
+#             return self.game_df
+            
+        elif self._mpi == False:
             print('No parallelization.')
             game_matrix = np.random.randint(self.ran_range, size=self.game_size)
             print('Created game matrix of size {}.  Returning game dataframe...'.format(self.game_size))
@@ -186,20 +201,36 @@ class Ashby(Regulator):
         # Get game.    
         if self.game is not None:
             print('Game given')
-            print('setting game size to self.game.shape')
-            self.game_size = self.game.shape
-        elif self.parallelize:
-            if self.mpi:
-                print('mpi in training')
+            #print('setting game size to self.game.shape')
+            #self.game_size = self.game.shape
+        #elif self.parallelize:
+            #if self.mpi:
+                #print('mpi in training')
         else:
             print('Creating game of size', self.game_size, 'and range', self.ran_range)
             #self.game = self.create_game(self.game_size,self.ran_range)
-            self.game = self.create_game()
+            
+            if self._mpi:
+                if self._rank == 0:
+                    the_game = self.create_game()
+                else:
+                    the_game = None
+                
+                self.game_df = self._comm.bcast(the_game,root=0)
+                print('RANK {}, GAME_DF {}'.format(self._rank, self.game_df))
+                #self.game_df = self._comm.bcast(
+            elif self._mpi == False:
+                self.game = self.create_game()
         
         # Reduce verbosity
         if self._mpi:
             if self._rank == 0:
-                print('Root rank {} showing game'.format(self._rank))
+                print('Root rank {} showing game.'.format(self._rank))
+                print(self.game)
+                
+            # For Testing keep verbosity
+            else:
+                print('Rank {} (not root) showing game for testing.'.format(self._rank))
                 print(self.game)
         elif self._mpi == False:
             print(self.game)
