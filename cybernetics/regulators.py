@@ -23,6 +23,8 @@ class Regulator():
 class Ashby(Regulator):
     '''
     Subclass of Regulator class to illustrate Ashby's basic game theoretic foundation for cybernetic regulators.
+    
+    Parallelization arguments need to be specified upon instance creation.
     '''
     #from cybernetics.train import train
     
@@ -94,7 +96,7 @@ class Ashby(Regulator):
             return self.game_df
             
         else:
-            print('No ranks.')
+            print('No parallelization.')
             game_matrix = np.random.randint(self.ran_range, size=self.game_size)
             print('Created game matrix of size {}.  Returning game dataframe...'.format(self.game_size))
             rows = [i+1 for i in range(self.game_size[0])]
@@ -179,7 +181,7 @@ class Ashby(Regulator):
         
     def train(self):
         
-        print('self.game:',self.game)
+        #print('self.game:',self.game)
         
         # Get game.    
         if self.game is not None:
@@ -193,12 +195,21 @@ class Ashby(Regulator):
             print('Creating game of size', self.game_size, 'and range', self.ran_range)
             #self.game = self.create_game(self.game_size,self.ran_range)
             self.game = self.create_game()
-            
-            
-        print(self.game)
+        
+        # Reduce verbosity
+        if self._mpi:
+            if self._rank == 0:
+                print('Root rank {} showing game'.format(self._rank))
+                print(self.game)
+        elif self._mpi == False:
+            print(self.game)
+        
+        # Initialize reinforcement learning parameters.
         urn = np.random.randint(100, size=len(self.game_df.columns))
         probs = np.array([(i/sum(urn)) for i in urn])
         #print("probs:",probs)
+        
+        
         
         regulator = dict(zip(self.game_df.columns,urn))
         print("regulator:",regulator)
