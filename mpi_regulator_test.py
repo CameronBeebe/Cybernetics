@@ -14,7 +14,7 @@ ash.goals.append(3)
 #ash.parallelize = True
 #ash.mpi = True
 
-ash.create_game()
+#ash.create_game()
 
 ash.train()
 
