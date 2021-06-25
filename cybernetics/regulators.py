@@ -1,7 +1,6 @@
 import numpy as np
 import pandas as pd
-#from mpi4py import MPI
-#import pyspark
+
 
 class Regulator():
     '''
@@ -26,9 +25,7 @@ class Ashby(Regulator):
     
     Parallelization arguments need to be specified upon instance creation.
     '''
-    #from cybernetics.train import train
     
-    #def __init__(self,goals,game_size,epochs,ran_range,game):
     def __init__(self,goals=[], game_size=(1,1), epochs=5, ran_range=10, game=None, skweez=None, history=dict(), game_df=None, parallelize=False, mpi=False, pyspark=False, comm=False, rank=False):
         Regulator.__init__(self)
         self.goals = goals
@@ -112,7 +109,7 @@ class Ashby(Regulator):
 #             return self.game_df
             
         elif self._mpi == False:
-            print('No parallelization.')
+            print('No MPI parallelization.')
             game_matrix = np.random.randint(self.ran_range, size=self.game_size)
             print('Created game matrix of size {}.  Returning game dataframe...'.format(self.game_size))
             rows = [i+1 for i in range(self.game_size[0])]
