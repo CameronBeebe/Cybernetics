@@ -33,3 +33,7 @@ BEGAN
 9.  Integrate everything into classes, remove old files
 
 10.  Add quality control: check to make sure something in list of goals are in game so trivially unproductive games are not run.  Be able to accept a list of goals
+
+11.  Create (at least in MPI version) a per-rank goal functionality.  That is, each rank has its own goal, and depending on user input the functionality checks for a rank that has trained for that goal and uses that rank's regulator to spit out a response.
+
+12.  Create a method that just spits out one single action in response to an environmental disturbance (row).  I.e. just one train forward pass.
