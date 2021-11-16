@@ -2,6 +2,8 @@ An implementation of the game theoretic foundation of cybernetic systems theory 
 
 Cybernetics, as outlined by Ashby, provides a foundational framework to understand the effectiveness of common machine learning techniques.  In particular, connectionist artificial neural networks can be understood as cybernetic regulators which are error-controlled, or which learn through reinforcement.
 
+At the moment there is just basic functionality of a toy model to illustrate the basic concepts, it is limited in its applicability (and performance).
+
 The ultimate goal of this package is to provide a common class structure for regulatory objects.
 
 TO DO:
