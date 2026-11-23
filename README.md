@@ -2,6 +2,10 @@ An implementation of the game theoretic foundation of cybernetic systems theory 
 
 Cybernetics, as outlined by Ashby, provides a foundational framework to understand the effectiveness of common machine learning techniques.  In particular, connectionist artificial neural networks can be understood as cybernetic regulators which are error-controlled, or which learn through reinforcement.
 
+## Interactive demo
+
+The canonical static demo lives in [`docs/`](docs/) (vanilla ES modules and SVG, no build step). A blind Pólya-urn regulator and a disturbance-conditioned one learn on the same payoff matrix, so the law of requisite variety is visible. An identical mirror is at [`cybernetics/`](https://github.com/CameronBeebe/cameronbeebe.github.io/tree/master/cybernetics) in the portfolio repo, intended for https://cameronbeebe.github.io/cybernetics/. Enabling GitHub Pages from `/docs` on this repo (https://cameronbeebe.github.io/Cybernetics/) is a separate step and is not done by opening a PR. See [`docs/README.md`](docs/README.md).
+
 At the moment there is just basic functionality of a toy model to illustrate the basic concepts, it is limited in its applicability (and performance).
 
 The ultimate goal of this package is to provide a common class structure for regulatory objects.
